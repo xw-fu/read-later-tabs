@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" shape-rendering="geometricPrecision">
+  <!-- Read Later Tabs -->
+  <!-- Concept: a small stack of paper notes (queued tabs) with a gold bookmark
+       on the topmost sheet (today's pick). Warm paper palette matches the
+       new-tab UI. -->
+
+  <!-- soft warm background, slightly inset corners -->
+  <rect x="6" y="6" width="116" height="116" rx="22" ry="22" fill="#fdf6e3"/>
+
+  <!-- back sheet (oldest, most aged) -->
+  <g transform="translate(34 38) rotate(-7)">
+    <rect x="0" y="0" width="64" height="76" rx="3" ry="3"
+          fill="#f5edd6" stroke="#ebe1c8" stroke-width="1.5"/>
+  </g>
+
+  <!-- middle sheet -->
+  <g transform="translate(28 34) rotate(3)">
+    <rect x="0" y="0" width="64" height="76" rx="3" ry="3"
+          fill="#fefcf3" stroke="#ebe1c8" stroke-width="1.5"/>
+    <line x1="10" y1="22" x2="50" y2="22" stroke="#ebe1c8" stroke-width="2" stroke-linecap="round"/>
+    <line x1="10" y1="32" x2="42" y2="32" stroke="#ebe1c8" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- front sheet (today's recommendation) -->
+  <g transform="translate(36 30)">
+    <!-- page body -->
+    <path d="M 0 3
+             Q 0 0 3 0
+             L 56 0
+             Q 59 0 59 3
+             L 59 73
+             Q 59 76 56 76
+             L 3 76
+             Q 0 76 0 73
+             Z"
+          fill="#fefcf3" stroke="#856d43" stroke-width="1.5" stroke-opacity="0.55"/>
+
+    <!-- text lines -->
+    <line x1="10" y1="20" x2="48" y2="20" stroke="#1c1917" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="10" y1="30" x2="40" y2="30" stroke="#856d43" stroke-width="2" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="10" y1="40" x2="46" y2="40" stroke="#856d43" stroke-width="2" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="10" y1="50" x2="34" y2="50" stroke="#856d43" stroke-width="2" stroke-linecap="round" stroke-opacity="0.55"/>
+
+    <!-- gold bookmark/ribbon hanging from top-right -->
+    <path d="M 44 0
+             L 54 0
+             L 54 22
+             L 49 17
+             L 44 22
+             Z"
+          fill="#a16207"/>
+    <path d="M 44 0
+             L 54 0
+             L 54 4
+             L 44 4
+             Z"
+          fill="#000" fill-opacity="0.12"/>
+  </g>
+</svg>

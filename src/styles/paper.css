@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background: #fdf6e3;
+    color: #1c1917;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  }
+}
+
+@layer components {
+  .paper-card {
+    background: #fefcf3;
+    border: 1px solid #ebe1c8;
+    border-radius: 2px;
+    padding: 14px;
+    transition: transform 0.2s, opacity 0.3s;
+  }
+  .paper-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(133, 109, 67, 0.08);
+  }
+  .paper-aged-3 { opacity: 0.85; }
+  .paper-aged-7 { opacity: 0.65; }
+  .paper-aged-14 { opacity: 0.45; background: #f5edd6; }
+}
