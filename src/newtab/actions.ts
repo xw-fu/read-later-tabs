@@ -81,3 +81,8 @@ export async function reopenArchived(tab: TabRecord): Promise<void> {
   const all = await storage.getTabs();
   await storage.setTabs(all.filter(t => !(t.tabId === tab.tabId && t.isArchived)));
 }
+
+export async function discardArchived(tab: TabRecord): Promise<void> {
+  const all = await storage.getTabs();
+  await storage.setTabs(all.filter(t => !(t.tabId === tab.tabId && t.isArchived)));
+}

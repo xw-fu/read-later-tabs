@@ -99,4 +99,18 @@ describe('actions', () => {
     expect(tabs.find(t => t.tabId === 99)).toBeUndefined();
     expect(tabs.find(t => t.tabId === 100)).toBeDefined(); // unrelated record untouched
   });
+
+  it('discardArchived removes the archived record without opening a tab', async () => {
+    const archived = { ...tab, tabId: 77, isArchived: true };
+    await storage.setTabs([archived, { ...tab, tabId: 78, isArchived: false }]);
+    (chrome.tabs.create as any).mockReset();
+
+    const { discardArchived } = await import('../../src/newtab/actions');
+    await discardArchived(archived);
+
+    expect(chrome.tabs.create).not.toHaveBeenCalled();
+    const tabs = await storage.getTabs();
+    expect(tabs.find(t => t.tabId === 77)).toBeUndefined();
+    expect(tabs.find(t => t.tabId === 78)).toBeDefined();
+  });
 });
