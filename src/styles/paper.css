@@ -25,4 +25,9 @@
   .paper-aged-3 { opacity: 0.85; }
   .paper-aged-7 { opacity: 0.65; }
   .paper-aged-14 { opacity: 0.45; background: #f5edd6; }
+  .tab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.875rem;
+  }
 }
