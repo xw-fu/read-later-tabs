@@ -2,13 +2,11 @@
   import { onMount } from 'svelte';
   import { createNewTabStore } from './stores.svelte';
   import { ageDays } from '../lib/aging';
-  import { switchToTab, applyVerdict } from './actions';
+  import { switchToTab, applyVerdict, reopenArchived, discardArchived } from './actions';
   import type { TabRecord, Verdict } from '../lib/types';
   import TopBar from './components/TopBar.svelte';
   import HeroCard from './components/HeroCard.svelte';
-  import TabGrid from './components/TabGrid.svelte';
-  import ToolsSection from './components/ToolsSection.svelte';
-  import ArchiveSection from './components/ArchiveSection.svelte';
+  import TabGroup from './components/TabGroup.svelte';
   import SearchOverlay from './components/SearchOverlay.svelte';
   import ShortcutHelp from './components/ShortcutHelp.svelte';
   import EmptyState from './components/EmptyState.svelte';
@@ -57,11 +55,20 @@
     await store.refresh();
   }
 
+  const openGroupTabs = $derived<TabRecord[]>([...store.visible, ...store.tools]);
+
+  async function handleReopen(tab: TabRecord) {
+    try { await reopenArchived(tab); } finally { await store.refresh(); }
+  }
+  async function handleDiscard(tab: TabRecord) {
+    await discardArchived(tab);
+    await store.refresh();
+  }
+
   let searchOpen = $state(false);
   let helpOpen = $state(false);
   let bulkOpen = $state(false);
   const bulkPromptThreshold = 30;
-  const showArchivePrompt = $derived(store.archived.length >= bulkPromptThreshold);
 
   function onGlobalKey(e: KeyboardEvent) {
     const target = e.target as HTMLElement | null;
@@ -74,7 +81,7 @@
   }
 </script>
 
-<main class="min-h-screen px-12 py-12 max-w-5xl mx-auto">
+<main class="min-h-screen py-12 px-8 lg:px-12 xl:px-16 mx-auto">
   {#if storeState.loading}
     <p class="text-paper-muted italic">Loading…</p>
   {:else}
@@ -85,7 +92,7 @@
       oldestDays={oldestDays}
     />
 
-    {#if store.visible.length === 0 && store.tools.length === 0}
+    {#if openGroupTabs.length === 0 && store.archived.length === 0}
       <EmptyState />
     {:else}
       {#if storeState.recommendation}
@@ -99,29 +106,29 @@
         />
       {/if}
 
-      {#if store.visible.length > 0}
-        <TabGrid
-          tabs={store.visible}
+      {#if openGroupTabs.length > 0}
+        <TabGroup
+          title={`Open · ${openGroupTabs.length}`}
+          tabs={openGroupTabs}
           onClickTab={handleClickTab}
           onVerdict={handleVerdict}
           onArchive={handleArchive}
         />
       {/if}
 
-      {#if showArchivePrompt && !bulkOpen}
-        <div class="mt-8 p-4 bg-paper-aged border-l-4 border-paper-gold font-serif">
-          <p class="italic text-sm text-paper-muted">
-            你的库存有 {store.archived.length} 张纸笺。
-            <button class="text-paper-gold underline ml-2" onclick={() => (bulkOpen = true)}>花 5 分钟过一遍</button>
-          </p>
-        </div>
-      {/if}
-
-      {#if store.tools.length > 0}
-        <ToolsSection tabs={store.tools} onClickTab={handleClickTab} />
-      {/if}
       {#if store.archived.length > 0}
-        <ArchiveSection tabs={store.archived} onChanged={() => store.refresh()} />
+        <TabGroup
+          title={`Archived · ${store.archived.length}`}
+          tabs={store.archived}
+          onClickTab={handleClickTab}
+          onVerdict={handleVerdict}
+          onArchive={handleArchive}
+          onReopen={handleReopen}
+          onDiscard={handleDiscard}
+          bulkActionLabel="批量处理"
+          onBulkAction={() => (bulkOpen = true)}
+          bulkActionThreshold={bulkPromptThreshold}
+        />
       {/if}
     {/if}
   {/if}
