@@ -32,7 +32,7 @@
     <h3 class="font-serif text-base font-semibold tracking-wide">{title}</h3>
     <span class="font-serif italic text-xs text-paper-dim flex items-center gap-3">
       {#if showBulkAction}
-        <button class="text-paper-gold underline text-xs not-italic" onclick={onBulkAction}>
+        <button type="button" class="text-paper-gold underline text-xs not-italic" onclick={onBulkAction}>
           {bulkActionLabel}
         </button>
       {/if}
