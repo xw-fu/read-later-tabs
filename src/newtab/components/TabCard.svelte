@@ -63,7 +63,7 @@
   }
 
   const days = $derived(ageDays(tab.firstSeenAt));
-  const klass = $derived(agingClass(days));
+  const klass = $derived(variant === 'default' ? agingClass(days) : '');
   const decor = $derived(agingDecoration(days));
 
   function startPress() {

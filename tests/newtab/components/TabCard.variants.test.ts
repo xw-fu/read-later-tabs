@@ -29,4 +29,32 @@ describe('TabCard variants', () => {
     });
     expect(screen.queryByText('tool')).toBeNull();
   });
+
+  it('does not apply any paper-aged class to the tool variant', () => {
+    const { container } = render(TabCard, {
+      // Old timestamp would normally trigger paper-aged-14.
+      tab: tab({ isTool: true, firstSeenAt: Date.now() - 20 * 86_400_000 }),
+      onClick: vi.fn(), onVerdict: vi.fn(), onArchive: vi.fn(),
+    });
+    const card = container.querySelector('.paper-card') as HTMLElement;
+    expect(card.className).not.toMatch(/paper-aged-/);
+  });
+
+  it('does not apply any paper-aged class to the archive variant', () => {
+    const { container } = render(TabCard, {
+      tab: tab({ isArchived: true, firstSeenAt: Date.now() - 20 * 86_400_000 }),
+      onClick: vi.fn(), onVerdict: vi.fn(), onArchive: vi.fn(),
+    });
+    const card = container.querySelector('.paper-card') as HTMLElement;
+    expect(card.className).not.toMatch(/paper-aged-/);
+  });
+
+  it('still applies the paper-aged class to the default variant', () => {
+    const { container } = render(TabCard, {
+      tab: tab({ firstSeenAt: Date.now() - 20 * 86_400_000 }),
+      onClick: vi.fn(), onVerdict: vi.fn(), onArchive: vi.fn(),
+    });
+    const card = container.querySelector('.paper-card') as HTMLElement;
+    expect(card.className).toMatch(/paper-aged-/);
+  });
 });
