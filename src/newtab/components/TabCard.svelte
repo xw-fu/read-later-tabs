@@ -13,6 +13,10 @@
   }
   let { tab, onClick, onVerdict, onArchive }: Props = $props();
 
+  const variant = $derived<'default' | 'tool' | 'archive'>(
+    tab.isArchived ? 'archive' : tab.isTool ? 'tool' : 'default',
+  );
+
   let pickerOpen = $state(false);
   let pressTimer: ReturnType<typeof setTimeout> | null = null;
   let longPressed = $state(false);
@@ -119,7 +123,11 @@
         aria-hidden="true"
       >{initial}</div>
     {/if}
-    {#if decor}<span class="text-xs">{decor}</span>{/if}
+    {#if variant === 'tool'}
+      <span class="bg-paper-edge text-paper-muted text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm">tool</span>
+    {:else if decor}
+      <span class="text-xs">{decor}</span>
+    {/if}
   </div>
   <div class="text-sm font-medium leading-snug mb-1.5 line-clamp-2 min-h-[2.6em]">{tab.title || tab.domain}</div>
   <div class="font-serif italic text-[10px] text-paper-muted">{tab.domain} · 已开 {days} 天</div>
