@@ -75,3 +75,9 @@ export async function setDomainOverride(
 ): Promise<void> {
   await storage.setDomainOverride(domain, override);
 }
+
+export async function reopenArchived(tab: TabRecord): Promise<void> {
+  await chrome.tabs.create({ url: tab.url });
+  const all = await storage.getTabs();
+  await storage.setTabs(all.filter(t => !(t.tabId === tab.tabId && t.isArchived)));
+}

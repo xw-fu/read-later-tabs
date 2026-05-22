@@ -84,4 +84,19 @@ describe('actions', () => {
     expect(events.map(e => e.verdict)).toEqual(['bookmark', 'trash']);
     expect(events.map(e => e.title)).toEqual(['A', 'B']);
   });
+
+  it('reopenArchived opens a new tab with the url and removes the archived record', async () => {
+    const archived = { ...tab, tabId: 99, isArchived: true };
+    await storage.setTabs([archived, { ...tab, tabId: 100, isArchived: false }]);
+    (chrome.tabs.create as any).mockReset();
+    (chrome.tabs.create as any).mockResolvedValue({ id: 999 });
+
+    const { reopenArchived } = await import('../../src/newtab/actions');
+    await reopenArchived(archived);
+
+    expect(chrome.tabs.create).toHaveBeenCalledWith({ url: archived.url });
+    const tabs = await storage.getTabs();
+    expect(tabs.find(t => t.tabId === 99)).toBeUndefined();
+    expect(tabs.find(t => t.tabId === 100)).toBeDefined(); // unrelated record untouched
+  });
 });
