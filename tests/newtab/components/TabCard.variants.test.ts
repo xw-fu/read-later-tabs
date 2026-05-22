@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { render, screen, fireEvent } from '@testing-library/svelte';
 import TabCard from '../../../src/newtab/components/TabCard.svelte';
 import type { TabRecord } from '../../../src/lib/types';
 
@@ -56,5 +56,28 @@ describe('TabCard variants', () => {
     });
     const card = container.querySelector('.paper-card') as HTMLElement;
     expect(card.className).toMatch(/paper-aged-/);
+  });
+
+  it('archive variant context menu shows Reopen / Discard / 复制链接 and omits verdict items', async () => {
+    const onReopen = vi.fn();
+    const onDiscard = vi.fn();
+    const { container } = render(TabCard, {
+      tab: tab({ isArchived: true }),
+      onClick: vi.fn(), onVerdict: vi.fn(), onArchive: vi.fn(),
+      onReopen, onDiscard,
+    });
+    const card = container.querySelector('.paper-card') as HTMLElement;
+    await fireEvent.contextMenu(card, { clientX: 50, clientY: 50 });
+
+    // ContextMenu portals itself to document.body.
+    const menu = document.querySelector('[role="menu"]') as HTMLElement;
+    expect(menu).toBeTruthy();
+    const labels = Array.from(menu.querySelectorAll('[role="menuitem"]')).map(el => el.textContent?.trim() ?? '');
+    expect(labels.some(l => l.includes('Reopen'))).toBe(true);
+    expect(labels.some(l => l.includes('Discard'))).toBe(true);
+    expect(labels.some(l => l.includes('复制链接'))).toBe(true);
+    expect(labels.some(l => l.includes('已读'))).toBe(false);
+    expect(labels.some(l => l.includes('书签'))).toBe(false);
+    expect(labels.some(l => l.includes('归档'))).toBe(false);
   });
 });

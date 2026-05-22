@@ -10,8 +10,10 @@
     onClick: () => void;
     onVerdict: (v: Verdict) => void;
     onArchive: () => void;
+    onReopen?: () => void;
+    onDiscard?: () => void;
   }
-  let { tab, onClick, onVerdict, onArchive }: Props = $props();
+  let { tab, onClick, onVerdict, onArchive, onReopen, onDiscard }: Props = $props();
 
   const variant = $derived<'default' | 'tool' | 'archive'>(
     tab.isArchived ? 'archive' : tab.isTool ? 'tool' : 'default',
@@ -35,17 +37,26 @@
     }
   }
 
-  const menuItems = $derived([
-    { icon: '✓', label: '已读', onPick: () => onVerdict('read') },
-    { icon: '★', label: '书签', onPick: () => onVerdict('bookmark') },
-    { icon: '✕', label: '丢', danger: true, onPick: () => onVerdict('trash') },
-    { icon: '📦', label: '归档', onPick: () => onArchive() },
-    { separator: true },
-    { icon: '📋', label: '复制链接', onPick: () => navigator.clipboard.writeText(tab.url) },
-    { separator: true },
-    { icon: '🛠', label: '永远当作工具', onPick: () => setDomainOverride(tab.domain, 'tool') },
-    { icon: '📰', label: '这不是工具', onPick: () => setDomainOverride(tab.domain, 'content') },
-  ]);
+  const menuItems = $derived(
+    variant === 'archive'
+      ? [
+          { icon: '↩', label: 'Reopen', onPick: () => onReopen?.() },
+          { icon: '✕', label: 'Discard', danger: true, onPick: () => onDiscard?.() },
+          { separator: true },
+          { icon: '📋', label: '复制链接', onPick: () => navigator.clipboard.writeText(tab.url) },
+        ]
+      : [
+          { icon: '✓', label: '已读', onPick: () => onVerdict('read') },
+          { icon: '★', label: '书签', onPick: () => onVerdict('bookmark') },
+          { icon: '✕', label: '丢', danger: true, onPick: () => onVerdict('trash') },
+          { icon: '📦', label: '归档', onPick: () => onArchive() },
+          { separator: true },
+          { icon: '📋', label: '复制链接', onPick: () => navigator.clipboard.writeText(tab.url) },
+          { separator: true },
+          { icon: '🛠', label: '永远当作工具', onPick: () => setDomainOverride(tab.domain, 'tool') },
+          { icon: '📰', label: '这不是工具', onPick: () => setDomainOverride(tab.domain, 'content') },
+        ],
+  );
 
   let faviconAttempt = $state(0);
   const faviconSources = $derived([
