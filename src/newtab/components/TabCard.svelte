@@ -78,6 +78,7 @@
   const decor = $derived(agingDecoration(days));
 
   function startPress() {
+    if (variant === 'archive') return;
     longPressed = false;
     pressTimer = setTimeout(() => {
       longPressed = true;

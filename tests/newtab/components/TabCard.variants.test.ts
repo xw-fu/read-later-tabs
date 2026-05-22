@@ -80,4 +80,19 @@ describe('TabCard variants', () => {
     expect(labels.some(l => l.includes('书签'))).toBe(false);
     expect(labels.some(l => l.includes('归档'))).toBe(false);
   });
+
+  it('archive variant does not invoke onArchive when long-pressed', async () => {
+    vi.useFakeTimers();
+    const onArchive = vi.fn();
+    const { container } = render(TabCard, {
+      tab: tab({ isArchived: true }),
+      onClick: vi.fn(), onVerdict: vi.fn(), onArchive,
+    });
+    const card = container.querySelector('.paper-card') as HTMLElement;
+    card.dispatchEvent(new MouseEvent('mousedown', { button: 0, bubbles: true }));
+    vi.advanceTimersByTime(800);
+    card.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+    expect(onArchive).not.toHaveBeenCalled();
+    vi.useRealTimers();
+  });
 });
